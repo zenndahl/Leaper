@@ -8,22 +8,29 @@ public class GameManager : MonoBehaviour
 {
     public TextMeshProUGUI pointsUI;
     public TextMeshProUGUI timerUI;
+    private PlayerControls inputActions;
 
     public GameObject menuUI;
+    public GameObject pauseUI;
+    public GameObject gameOverUI;
     public PlayerController player;
 
     public float timeTotal;
     private float timerCountdown;
 
+    private bool paused = false;
+
     private void Awake()
     {
         Time.timeScale = 0;
+        timerCountdown = timeTotal;
     }
 
     void Start()
     {
         EventManager.Instance.onAddTime += TimerUpdate;
         player = FindObjectOfType<PlayerController>();
+        inputActions = new PlayerControls();
     }
 
     private void OnDestroy()
@@ -34,7 +41,6 @@ public class GameManager : MonoBehaviour
     public void Play()
     {
         Time.timeScale = 1;
-        timerCountdown = timeTotal;
         //PlayerController.points = 0;
         menuUI.SetActive(false);
         SpawnerController.spawn = true;
@@ -55,7 +61,7 @@ public class GameManager : MonoBehaviour
 
         if(timerCountdown <= 0)
         {
-            //game over
+            //GameOver();
         }
         timerCountdown -= Time.deltaTime;
 
@@ -69,9 +75,29 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         Time.timeScale = 0;
-        menuUI.SetActive(true);
+        gameOverUI.SetActive(true);
         SpawnerController.spawn = false;
         
+    }
+
+    public void Pause()
+    {
+        if (!paused)
+        {
+            Time.timeScale = 0;
+            SpawnerController.spawn = false;
+            pauseUI.SetActive(true);
+            inputActions.Land.Disable();
+            paused = !paused;
+        }
+        else
+        {
+            Time.timeScale = 1;
+            SpawnerController.spawn = true;
+            pauseUI.SetActive(false);
+            inputActions.Land.Enable();
+            paused = !paused;
+        }
     }
 
     //public static float CheckTimer()

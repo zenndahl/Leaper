@@ -13,6 +13,10 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D collider;
     private Animator animator;
 
+    private float objWidth;
+    //private float objHeight;
+    private Vector2 bounds;
+
     private bool isFacingRight = true;
 
     [Header("Speed Variables")]
@@ -54,6 +58,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+
         EventManager.Instance.TargetCaptured();
         SpawnerController.spawn = true;
         Destroy(other.gameObject);
@@ -61,13 +66,32 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        objWidth = transform.GetComponent<SpriteRenderer>().bounds.size.x / 2;
+        bounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
+
         //option for lambda event subscription
         //inputActions.Land.Attack.started += context => Attack(context);
     }
 
-    void FixedUpdate()
+    void Update()
     {
         Move();
+    }
+
+    private void LateUpdate()
+    {
+        //check if is out of screen
+        Vector3 viewPos = transform.position;
+        if (transform.position.x + objWidth > bounds.x)
+        {
+            viewPos.x = bounds.x - objWidth;
+        }
+        else if(transform.position.x - objWidth < -bounds.x)
+        {
+            viewPos.x = bounds.x + objWidth;
+        }
+
+        transform.position = viewPos;
     }
 
     public void Move()
@@ -75,9 +99,8 @@ public class PlayerController : MonoBehaviour
         Vector2 inputVector = inputActions.Land.Move.ReadValue<Vector2>();
         //transform.Translate(inputVector.x * moveSpeed * Time.deltaTime, 0, 0);
         //rigidbody.AddForce(inputVector * moveSpeed, ForceMode2D.Force);
+
         rigidbody.velocity = new Vector2(inputVector.x * moveSpeed, rigidbody.velocity.y);
-
-
 
         //Animations
         if (inputVector.x != 0 && isGrounded)
@@ -100,7 +123,7 @@ public class PlayerController : MonoBehaviour
     }
 
     public void Jump(InputAction.CallbackContext context) {
-        if (context.performed && jumpCounter < 2)
+        if (jumpCounter < 2)
         {
             jumpCounter++;
             rigidbody.AddForce(Vector3.up * jumpSpeed, ForceMode2D.Impulse);

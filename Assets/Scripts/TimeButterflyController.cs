@@ -9,29 +9,29 @@ public class TimeButterflyController : ButterflyController
     
     private void Update()
     {
-        if (debuffTime == 0 && playerController.ReturnPoints() > 50)
-        {
-            bonusTime--;
-            debuffTime++;
-        }
+        //if (debuffTime == 0 && playerController.ReturnPoints() > 50)
+        //{
+        //    bonusTime--;
+        //    debuffTime++;
+        //}
 
-        if (debuffTime == 1 && playerController.ReturnPoints() > 100)
-        {
-            bonusTime--;
-            debuffTime++;
-        }
+        //if (debuffTime == 1 && playerController.ReturnPoints() > 100)
+        //{
+        //    bonusTime--;
+        //    debuffTime++;
+        //}
 
-        if(debuffTime == 2 && playerController.ReturnPoints() > 150)
-        {
-            bonusTime--;
-            debuffTime++;
-        }
+        //if(debuffTime == 2 && playerController.ReturnPoints() > 150)
+        //{
+        //    bonusTime--;
+        //    debuffTime++;
+        //}
 
-        if (debuffTime == 3 && playerController.ReturnPoints() > 200)
-        {
-            bonusTime--;
-            debuffTime++;
-        }
+        //if (debuffTime == 3 && playerController.ReturnPoints() > 200)
+        //{
+        //    bonusTime--;
+        //    debuffTime++;
+        //}
     }
 
     protected override void SetButterflyType()

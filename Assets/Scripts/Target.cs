@@ -7,12 +7,10 @@ public class Target : MonoBehaviour
     private float countdown = 5;
     protected float speed = 2;
     public int points;
-    protected PlayerController playerController;
 
-    void Start()
+    private void Awake()
     {
         EventManager.Instance.onTargetCaptured += Pontuate;
-        playerController = FindObjectOfType<PlayerController>();
     }
 
     private void OnDestroy()
