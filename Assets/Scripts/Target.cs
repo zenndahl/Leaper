@@ -29,5 +29,7 @@ public class Target : MonoBehaviour
     {
         FindObjectOfType<PlayerController>().AddPoints(points);
         EventManager.Instance.onTargetCaptured -= Pontuate;
+
+        SoundManager.PlaySound(SoundManager.Sound.TargetHit);
     }
 }

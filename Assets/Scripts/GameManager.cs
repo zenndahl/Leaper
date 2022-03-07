@@ -6,24 +6,43 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
+
+    private PlayerControls inputActions;
+    private PlayerController player;
+
+    [Header("Sounds")]
+    public SoundAudioClip[] soundAudioClipsArray;
+    public AudioClip bgMusic;
+
+    [Header("UI")]
     public TextMeshProUGUI pointsUI;
     public TextMeshProUGUI timerUI;
-    private PlayerControls inputActions;
-
     public GameObject menuUI;
     public GameObject pauseUI;
     public GameObject gameOverUI;
-    public PlayerController player;
+
 
     public float timeTotal;
     private float timerCountdown;
-
     private bool paused = false;
 
     private void Awake()
     {
+        if(Instance != null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         Time.timeScale = 0;
         timerCountdown = timeTotal;
+
+        SoundManager.Initialize();
     }
 
     void Start()

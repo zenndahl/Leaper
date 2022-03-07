@@ -81,17 +81,17 @@ public class PlayerController : MonoBehaviour
     private void LateUpdate()
     {
         //check if is out of screen
-        Vector3 viewPos = transform.position;
-        if (transform.position.x + objWidth > bounds.x)
-        {
-            viewPos.x = bounds.x - objWidth;
-        }
-        else if(transform.position.x - objWidth < -bounds.x)
-        {
-            viewPos.x = bounds.x + objWidth;
-        }
+        //Vector3 viewPos = transform.position;
+        //if (transform.position.x + objWidth > bounds.x)
+        //{
+        //    viewPos.x = bounds.x - objWidth;
+        //}
+        //else if(transform.position.x - objWidth < -bounds.x)
+        //{
+        //    viewPos.x = bounds.x + objWidth;
+        //}
 
-        transform.position = viewPos;
+        //transform.position = viewPos;
     }
 
     public void Move()
@@ -101,6 +101,11 @@ public class PlayerController : MonoBehaviour
         //rigidbody.AddForce(inputVector * moveSpeed, ForceMode2D.Force);
 
         rigidbody.velocity = new Vector2(inputVector.x * moveSpeed, rigidbody.velocity.y);
+
+        if(inputVector != null)
+        {
+            SoundManager.PlaySound(SoundManager.Sound.PlayerMove);
+        }
 
         //Animations
         if (inputVector.x != 0 && isGrounded)
@@ -130,6 +135,8 @@ public class PlayerController : MonoBehaviour
             if(jumpCounter == 1)
                 animator.SetTrigger("Jump");
             else if(jumpCounter == 2) animator.SetTrigger("Double Jump");
+
+            SoundManager.PlaySound(SoundManager.Sound.PlayerJump);
         }
     }
 

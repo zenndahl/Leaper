@@ -3159,12 +3159,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5bfa262548f57b448411aa0166d0e88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soundAudioClipsArray:
+  - sound: 1
+    clip: {fileID: 8300000, guid: a1db71eded8d814418687eb6a7e2a5e5, type: 3}
+  - sound: 0
+    clip: {fileID: 8300000, guid: a65a00a846b4b3a4986912738322b185, type: 3}
+  - sound: 2
+    clip: {fileID: 8300000, guid: 67391c24f4bdd7e4bbc31161329323e4, type: 3}
+  - sound: 3
+    clip: {fileID: 8300000, guid: df85689ae8ce0704aa012d7181266c8c, type: 3}
+  bgMusic: {fileID: 0}
   pointsUI: {fileID: 419327107}
   timerUI: {fileID: 290804122}
   menuUI: {fileID: 449076231}
   pauseUI: {fileID: 1409660671}
   gameOverUI: {fileID: 891244841}
-  player: {fileID: 0}
   timeTotal: 60
 --- !u!4 &1281722687
 Transform:

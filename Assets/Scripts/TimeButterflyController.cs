@@ -43,5 +43,7 @@ public class TimeButterflyController : ButterflyController
     {
         EventManager.Instance.AddTime(bonusTime);
         EventManager.Instance.onTargetCaptured -= Pontuate;
+
+        SoundManager.PlaySound(SoundManager.Sound.BonusTime);
     }
 }
