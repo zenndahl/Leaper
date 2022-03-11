@@ -7,15 +7,18 @@ public class ButterflyController : Target
     protected Animator animator;
     protected int butterflyType = 2;
 
-    private void Start()
+    protected void Start()
     {
-        animator = GetComponent<Animator>();
+        if(gameObject != null)
+        {
+            animator = GetComponent<Animator>();
 
-        SetButterflyType();
+            SetButterflyType();
 
-        if (butterflyType == 2) animator.SetBool("Butterfly 2", true);
-        if (butterflyType == 3) animator.SetBool("Butterfly 3", true);
-        if (butterflyType == 4) animator.SetBool("Butterfly 4", true);
+            if (butterflyType == 2) animator.SetBool("Butterfly 2", true);
+            if (butterflyType == 3) animator.SetBool("Butterfly 3", true);
+            if (butterflyType == 4) animator.SetBool("Butterfly 4", true);
+        }
     }
 
     protected virtual void SetButterflyType()

@@ -29,4 +29,13 @@ public class EventManager : MonoBehaviour
             onAddTime(time);
         }
     }
+
+    public event Action onGameOver;
+    public void GameOver()
+    {
+        if (onGameOver != null)
+        {
+            onGameOver();
+        }
+    }
 }

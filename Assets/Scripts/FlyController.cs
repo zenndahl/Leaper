@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class FlyController : Target
 {    
-    void Update()
-    {
-        Fly();
-        
-    }
 
     void Fly()
     {

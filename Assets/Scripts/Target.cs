@@ -12,6 +12,12 @@ public class Target : MonoBehaviour
     protected void Awake()
     {
         EventManager.Instance.onTargetCaptured += Pontuate;
+        //EventManager.Instance.onGameOver += Clear;
+    }
+
+    protected void Clear()
+    {
+        Destroy(gameObject);
     }
 
     protected void OnDestroy()
@@ -22,8 +28,11 @@ public class Target : MonoBehaviour
     // Update is called once per frame
     protected void Update()
     {
-        countdown -= Time.deltaTime;
-        if(countdown <= 0) Destroy(gameObject);
+        if(gameObject != null)
+        {
+            countdown -= Time.deltaTime;
+            if(countdown <= 0) Destroy(gameObject);
+        }
     }
 
     protected virtual void Pontuate()

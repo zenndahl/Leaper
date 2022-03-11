@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         EventManager.Instance.onAddTime += TimerUpdate;
+        EventManager.Instance.onGameOver += GameOver;
         player = FindObjectOfType<PlayerController>();
         inputActions = new PlayerControls();
     }
@@ -60,10 +61,12 @@ public class GameManager : MonoBehaviour
 
     public void Play()
     {
-        Time.timeScale = 1;
-        //PlayerController.points = 0;
+        timerCountdown = timeTotal;
+        points = 0;
         menuUI.SetActive(false);
+        gameOverUI.SetActive(false);
         SpawnerController.spawn = true;
+        Time.timeScale = 1;
     }
 
     public void Quit()
@@ -81,7 +84,7 @@ public class GameManager : MonoBehaviour
 
         if(timerCountdown <= 0)
         {
-            //GameOver();
+            EventManager.Instance.GameOver();
         }
         timerCountdown -= Time.deltaTime;
 
@@ -107,7 +110,6 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         gameOverUI.SetActive(true);
         SpawnerController.spawn = false;
-        
     }
 
     public void Pause()
