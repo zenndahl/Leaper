@@ -30,8 +30,8 @@ public class SpawnerController : MonoBehaviour
         }
         else countdown -= Time.deltaTime;
 
-        if (playerController.ReturnPoints() >= 20) timeBetweenSpawn = 2;
-        if (playerController.ReturnPoints() >= 50) timeBetweenSpawn = 1;
+        if (GameManager.Instance.GetPoints() >= 20) timeBetweenSpawn = 2;
+        if (GameManager.Instance.GetPoints() >= 50) timeBetweenSpawn = 1;
     }
 
     void SpawnTarget(){

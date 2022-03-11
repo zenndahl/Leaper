@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class ButterflyController : Target
 {
-    private Animator animator;
+    protected Animator animator;
     protected int butterflyType = 2;
 
-    private void Awake()
+    private void Start()
     {
         animator = GetComponent<Animator>();
 

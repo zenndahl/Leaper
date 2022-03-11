@@ -6,14 +6,16 @@ using TMPro;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    public static GameManager Instance { get; private set; }
 
     private PlayerControls inputActions;
     private PlayerController player;
 
-    [Header("Sounds")]
-    public SoundAudioClip[] soundAudioClipsArray;
-    public AudioClip bgMusic;
+    private int points = 0;
+
+    //[Header("Sounds")]
+    //public SoundAudioClip[] soundAudioClipsArray;
+    //public AudioClip bgMusic;
 
     [Header("UI")]
     public TextMeshProUGUI pointsUI;
@@ -29,20 +31,19 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance != null)
+        if(Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
         }
 
+        DontDestroyOnLoad(gameObject);
+
         Time.timeScale = 0;
         timerCountdown = timeTotal;
-
-        SoundManager.Initialize();
     }
 
     void Start()
@@ -72,7 +73,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        pointsUI.text = player.ReturnPoints().ToString();
+        pointsUI.text = points.ToString();
 
         timerCountdown = Mathf.Clamp(timerCountdown, 0f, Mathf.Infinity);
         timerUI.text = string.Format("{0:00.00}", timerCountdown);
@@ -84,6 +85,16 @@ public class GameManager : MonoBehaviour
         }
         timerCountdown -= Time.deltaTime;
 
+    }
+
+    public void AddPoints(int pts)
+    {
+        points += pts;
+    }
+
+    public int GetPoints()
+    {
+        return points;
     }
 
     void TimerUpdate(int timeToAdd)

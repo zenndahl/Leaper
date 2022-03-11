@@ -26,7 +26,6 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public int jumpCounter = 0;
     public bool isGrounded = true;
-    private int points = 0;
 
     private void Awake()
     {
@@ -61,7 +60,6 @@ public class PlayerController : MonoBehaviour
 
         EventManager.Instance.TargetCaptured();
         SpawnerController.spawn = true;
-        Destroy(other.gameObject);
     }
 
     void Start()
@@ -102,9 +100,9 @@ public class PlayerController : MonoBehaviour
 
         rigidbody.velocity = new Vector2(inputVector.x * moveSpeed, rigidbody.velocity.y);
 
-        if(inputVector != null)
+        if(rigidbody.velocity != Vector2.zero && isGrounded)
         {
-            SoundManager.PlaySound(SoundManager.Sound.PlayerMove);
+            FindObjectOfType<SoundManager>().Play("PlayerMove");
         }
 
         //Animations
@@ -130,13 +128,13 @@ public class PlayerController : MonoBehaviour
     public void Jump(InputAction.CallbackContext context) {
         if (jumpCounter < 2)
         {
+            FindObjectOfType<SoundManager>().Play("PlayerJump");
+
             jumpCounter++;
             rigidbody.AddForce(Vector3.up * jumpSpeed, ForceMode2D.Impulse);
             if(jumpCounter == 1)
                 animator.SetTrigger("Jump");
             else if(jumpCounter == 2) animator.SetTrigger("Double Jump");
-
-            SoundManager.PlaySound(SoundManager.Sound.PlayerJump);
         }
     }
 
@@ -145,15 +143,5 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Attack");
         //context.ReadValue<float>();
         //context.ReadValueAsButton();
-    }
-
-    public void AddPoints(int pts)
-    {
-        points += pts;
-    }
-
-    public int ReturnPoints()
-    {
-        return points;
     }
 }

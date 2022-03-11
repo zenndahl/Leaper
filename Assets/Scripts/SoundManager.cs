@@ -1,9 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class SoundManager
+public class SoundManager : MonoBehaviour
 {
+    private static SoundManager _instance;
+    public SoundAudioClip[] sounds;
+    private static Dictionary<string, float> soundTimerDictionary;
+
+    public static SoundManager Instance { get { return _instance; } }
+
     public enum Sound
     {
         PlayerMove,
@@ -13,63 +20,102 @@ public static class SoundManager
         GameOver
     }
 
-    private static Dictionary<Sound, float> soundTimerDictionary;
-
-    public static void Initialize()
+    private void Awake()
     {
-        soundTimerDictionary = new Dictionary<Sound, float>();
-        soundTimerDictionary[Sound.PlayerMove] = 0;
-    }
-
-    public static void PlaySound(Sound sound)
-    {
-        if (CanPlaySound(sound))
+        if (_instance != null && _instance != this)
         {
-            GameObject soundGameObject = new GameObject("Sound");
-            AudioSource audioSource = soundGameObject.AddComponent<AudioSource>();
-            audioSource.PlayOneShot(GetAudioClip(sound));
+            Destroy(this.gameObject);
         }
-    }
-
-    private static bool CanPlaySound(Sound sound)
-    {
-        switch (sound)
+        else
         {
-            default:
-                return true;
-            case Sound.PlayerMove:
-                if (soundTimerDictionary.ContainsKey(sound))
-                {
-                    float lastTimePlayed = soundTimerDictionary[sound];
-                    float playerMoveTimeMax = 0.1f;
-                    if (lastTimePlayed + playerMoveTimeMax < Time.time)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-
-                    }
-                }
-                else
-                {
-                    return true;
-                }
-                //break;
+            _instance = this;
         }
-    }
 
-    private static AudioClip GetAudioClip(Sound sound)
-    {
-        foreach (SoundAudioClip soundClip in GameManager.Instance.soundAudioClipsArray)
+        soundTimerDictionary = new Dictionary<string, float>();
+
+        foreach (SoundAudioClip sound in sounds)
         {
-            if(soundClip.sound == sound)
+            sound.source = gameObject.AddComponent<AudioSource>();
+            sound.source.clip = sound.clip;
+
+            sound.source.volume = sound.volume;
+            sound.source.pitch = sound.pitch;
+            sound.source.loop = sound.isLoop;
+
+            if (sound.hasCooldown)
             {
-                return soundClip.clip;
+                Debug.Log(sound.name);
+                soundTimerDictionary[sound.name] = sound.cooldown;
             }
         }
-        Debug.LogError("Sound" + sound + "not found!");
-        return null;
     }
+
+    public void Play(string name)
+    {
+        SoundAudioClip sound = Array.Find(sounds, s => s.name == name);
+
+        if (sound == null)
+        {
+            Debug.LogError("Sound " + name + " Not Found!");
+            return;
+        }
+
+        if (!CanPlaySound(sound)) return;
+
+        sound.source.Play();
+    }
+
+    public void Stop(string name)
+    {
+        SoundAudioClip sound = Array.Find(sounds, s => s.name == name);
+
+        if (sound == null)
+        {
+            Debug.LogError("Sound " + name + " Not Found!");
+            return;
+        }
+
+        sound.source.Stop();
+    }
+
+    //public static void PlaySound(Sound sound)
+    //{
+    //    if (CanPlaySound(sound))
+    //    {
+    //        GameObject soundGameObject = new GameObject("Sound");
+    //        AudioSource audioSource = soundGameObject.AddComponent<AudioSource>();
+    //        audioSource.PlayOneShot(GetAudioClip(sound));
+    //    }
+    //}
+
+    private static bool CanPlaySound(SoundAudioClip sound)
+    {
+        if (soundTimerDictionary.ContainsKey(sound.name))
+        {
+            float lastTimePlayed = soundTimerDictionary[sound.name];
+
+            if (lastTimePlayed + sound.cooldown < Time.time)
+            {
+                soundTimerDictionary[sound.name] = Time.time;
+                return true;
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    //private static AudioClip GetAudioClip(Sound sound)
+    //{
+    //    foreach (SoundAudioClip soundClip in GameManager.Instance.soundAudioClipsArray)
+    //    {
+    //        if(soundClip.sound == sound)
+    //        {
+    //            return soundClip.clip;
+    //        }
+    //    }
+    //    Debug.LogError("Sound" + sound + "not found!");
+    //    return null;
+    //}
 }
