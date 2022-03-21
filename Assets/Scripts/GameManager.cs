@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 using TMPro;
 
@@ -18,12 +19,14 @@ public class GameManager : MonoBehaviour
     //public AudioClip bgMusic;
 
     [Header("UI")]
-    public TextMeshProUGUI pointsUI;
-    public TextMeshProUGUI timerUI;
-    public GameObject menuUI;
-    public GameObject pauseUI;
-    public GameObject gameOverUI;
-
+    [SerializeField]
+    private TextMeshProUGUI pointsUI;
+    [SerializeField]
+    private TextMeshProUGUI timerUI;
+    private GameObject menuUI;
+    private GameObject pauseUI;
+    private GameObject gameOverUI;
+    private GameObject pauseButton;
 
     public float timeTotal;
     private float timerCountdown;
@@ -41,22 +44,32 @@ public class GameManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-
-        Time.timeScale = 0;
-        timerCountdown = timeTotal;
     }
 
     void Start()
     {
+        Time.timeScale = 0;
+
         EventManager.Instance.onAddTime += TimerUpdate;
         EventManager.Instance.onGameOver += GameOver;
         player = FindObjectOfType<PlayerController>();
         inputActions = new PlayerControls();
+        SetUIs();
+        timerCountdown = timeTotal;
     }
 
-    private void OnDestroy()
+    private void SetUIs()
     {
-        EventManager.Instance.onAddTime -= TimerUpdate;
+        pointsUI = GameObject.Find("Pontuação").GetComponent<TextMeshProUGUI>();
+        timerUI = GameObject.Find("Tempo").GetComponent<TextMeshProUGUI>();
+        menuUI = GameObject.Find("Menu");
+        pauseUI = GameObject.Find("PauseUI");
+        gameOverUI = GameObject.Find("GameOverMenu");
+        pauseButton = GameObject.Find("PauseButton");
+
+        pauseUI.SetActive(false);
+        gameOverUI.SetActive(false);
+        pauseButton.SetActive(false);
     }
 
     public void Play()
@@ -65,12 +78,21 @@ public class GameManager : MonoBehaviour
         points = 0;
         menuUI.SetActive(false);
         gameOverUI.SetActive(false);
+        pauseButton.SetActive(true);
         SpawnerController.spawn = true;
         Time.timeScale = 1;
     }
 
+    public void Replay()
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
+        SetUIs();
+    }
+
     public void Quit()
     {
+        EventManager.Instance.onAddTime -= TimerUpdate;
         Quit();
     }
 
@@ -78,8 +100,11 @@ public class GameManager : MonoBehaviour
     {
         pointsUI.text = points.ToString();
 
-        timerCountdown = Mathf.Clamp(timerCountdown, 0f, Mathf.Infinity);
-        timerUI.text = string.Format("{0:00.00}", timerCountdown);
+        if(timerUI != null)
+        {
+            timerCountdown = Mathf.Clamp(timerCountdown, 0f, Mathf.Infinity);
+            timerUI.text = string.Format("{0:00.00}", timerCountdown);
+        }
         
 
         if(timerCountdown <= 0)
@@ -109,7 +134,9 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0;
         gameOverUI.SetActive(true);
+        pauseButton.SetActive(false);
         SpawnerController.spawn = false;
+        EventManager.Instance.onAddTime -= TimerUpdate;
     }
 
     public void Pause()
